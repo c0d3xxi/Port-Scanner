@@ -184,66 +184,48 @@ def prev_logs():
         log_window.iconbitmap(logo_path)
         log_window.configure(bg="white")
 
-        #Displaying logs
-        with open(file_path,"r",newline="") as log_file:
-            reader = csv.reader(log_file)
-            data_log= list(reader)
-            del(data_log[0]) 
-            
-            list_of_logs = []
-            for x in list(range(0,len(data_log))):
-                list_of_logs.append(data_log[x][0]+"              "+data_log[x][1])
+        #Scrollable page:
+
+        #Frame 1:
+        frame1 = Frame(log_window)
+        frame1.pack(fill=BOTH, expand=1)
+
+        #Canvas1:
+        canvas1 = Canvas(frame1)
+        canvas1.pack(side=LEFT, fill=BOTH, expand=1)
+
+        #Scrollbar:
+        scroll_bar = ttk.Scrollbar(frame1, orient = VERTICAL, command = canvas1.yview)
+        scroll_bar.pack(side=RIGHT, fill=Y)
+
+        #Canvas2:
+        canvas1.configure(yscrollcommand=scroll_bar.set)
+        
+        #binding configure to event e which is the action of scrolling in lambda function
+        canvas1.bind("<Configure>", lambda e: canvas1.configure(scrollregion=canvas1.bbox("all")))
+
+        #Frame 2:
+        frame2 = Frame(canvas1)
+
+        #Add frame 2 inside canvas:
+        canvas1.create_window((0,0), window= frame2, anchor="nw")
+        
+        #Output CSV file
+        
+        with open(file_path, newline="") as logged_file:
+            reader= csv.reader(logged_file)
+            i=0
+            for row in reader:
                 
-            #print(list_of_logs)
-            
-            label_details = Label(log_window, text = "Log Details 🔎", font=("Papyrus", 20, "bold")).place(relx=0.03, rely = 0.05)
-            label_list = Label(log_window, text = "Scroll and select from list of saved logs:", font=("Papyrus", 20, "bold")).place(relx=0.435, rely = 0.05)
-            
-            var = StringVar(value = list_of_logs)
-            #print(var.get())
-            
-            listerbox = Listbox(log_window, listvariable= var.get(), height= 8, width= 50)
-            listerbox.place(relx=0.7,rely=0.355,anchor=CENTER)
-            
-            
-            def view_detail():
-                index = listerbox.curselection()[0]
-                dtlabel2.config(text=data_log[index][0])
-                iplabel2.config(text=data_log[index][2])
-                namelabel2.config(text=data_log[index][1])
-                timelabel2.config(text=data_log[index][6])
-                sportlabel2.config(text=data_log[index][3])
-                eporttlabel2.config(text=data_log[index][4])
-                openportslabel2.config(text=data_log[index][5])
-            
-            button_data = ttk.Button(log_window, text= "View Details", command= view_detail)
-            button_data.place(relx= 0.5, rely = 0.65)
-            
-            dtlabel = Label(log_window, text = "Date/Time:", font=("Papyrus", 14, "bold")).place(relx=0.03, rely = 0.15)
-            timelabel = Label(log_window, text = "Time Taken:", font=("Papyrus", 14, "bold")).place(relx=0.03, rely = 0.45)
-            namelabel = Label(log_window, text = "Target Name:", font=("Papyrus", 14, "bold")).place(relx=0.03, rely = 0.35)
-            iplabel = Label(log_window, text = "IP Address:", font=("Papyrus", 14, "bold")).place(relx=0.03, rely = 0.25)
-            sportlabel = Label(log_window, text = "Start Port:", font=("Papyrus", 14, "bold")).place(relx=0.03, rely = 0.55)
-            eporttlabel = Label(log_window, text = "End Port:", font=("Papyrus", 14, "bold")).place(relx=0.03, rely = 0.65)
-            openportslabel = Label(log_window, text = "Open Ports:", font=("Papyrus", 14, "bold")).place(relx=0.03, rely = 0.75)
-            
-            dtlabel2 = Label(log_window, text = "", font=("Papyrus", 14, "bold"))
-            dtlabel2.place(relx=0.13, rely = 0.15)
-            timelabel2 = Label(log_window, text = "", font=("Papyrus", 14, "bold"))
-            timelabel2.place(relx=0.13, rely = 0.45)
-            namelabel2 = Label(log_window, text = "", font=("Papyrus", 14, "bold"))
-            namelabel2.place(relx=0.13, rely = 0.35)
-            iplabel2 = Label(log_window, text = "", font=("Papyrus", 14, "bold"))
-            iplabel2.place(relx=0.13, rely = 0.25)
-            sportlabel2 = Label(log_window, text = "", font=("Papyrus", 14, "bold"))
-            sportlabel2.place(relx=0.13, rely = 0.55)
-            eporttlabel2 = Label(log_window, text = "", font=("Papyrus", 14, "bold"))
-            eporttlabel2.place(relx=0.13, rely = 0.65)
-            openportslabel2 = Label(log_window, text = "", font=("Papyrus", 14, "bold"))
-            openportslabel2.place(relx=0.13, rely = 0.75)
-            
+                j=0
+                for col in row:
                     
-        log_file.close()          
+                    label_op = Label(frame2, width = 200, height=2, text=row, relief= RIDGE, bg="Black", fg="White", font=("Helvetica", 10,"bold"))
+                    label_op.grid(row=i, column =0)
+                    j=j+1
+                i=i+1
+        
+        logged_file.close()
         label_details = Label(log_window, text = "Log Details 🔎:", fg="White", bg="Black", font=("Papyrus", 30, "bold")).place(relx=0.001, rely = 0.00175)
         lbl_CR.place(relx=0.5,rely=0.980,anchor=CENTER)
         log_window.mainloop()
