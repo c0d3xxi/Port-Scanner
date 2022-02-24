@@ -13,15 +13,15 @@ from tkinter import ttk
 from tkinter.font import Font
 from tkinter import messagebox
 
-#from logdisplayer import logdisplayer_fun
+
 
 #logo path
 
-logo_path="det2.ico"
+logo_path="F:\programming_and_algo\python programs\Port Scanner\det2.ico"
 
 #file path
 
-file_path="logs.csv"
+file_path="F:\programming_and_algo\python programs\Port Scanner\logs.csv"
 
 
 #main windown (root) properties:
